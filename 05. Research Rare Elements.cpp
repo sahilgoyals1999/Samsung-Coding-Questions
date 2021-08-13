@@ -16,59 +16,67 @@ and order of square matrix was less than equal to (20).
 
 */
 
-#include<bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
-int dx[] = {0, 0, -1, +1};
-int dy[] = { -1, +1, 0, 0};
+int dx[4] = {0, 0, -1, 1};
+int dy[4] = { -1, 1, 0, 0};
 
-bool ar[21][21];
+bool a[21][21];
 bool vis[21][21];
-int ans[21][21];
-int n, q;
+int dist[21][21];
+int n;
 
-struct Point {
+class Point {
+public:
 	int x, y;
 };
 
-struct C {
+class Tuple {
+public:
 	int x, y;
 	int dis;
 };
 
-Point P;
-C c;
-
-bool issafe(int x, int y) {
+bool isSafe(int x, int y) {
 	return (x >= 0 && x < n && y >= 0 && y < n && a[x][y] == 1 && !vis[x][y]);
 }
 
+void init() {
+	for (int i = 0; i < 21; ++i) {
+		for (int j = 0; j < 21; ++j) {
+			dist[i][j] = 10000;
+			vis[i][j] = 0;
+		}
+	}
+}
+
 void bfs(int x, int y) {
-	queue q;
-	C in;
-	in.x = x;
-	in.y = y;
-	in.dis = 0;
-	q.push(in);
+	Tuple q[10001];
+	int start = 0, end = 0;
+	Tuple cur;
+	cur.x = x;
+	cur.y = y;
+	cur.dis = 0;
+	q[end++] = cur;
 	vis[x][y] = 1;
 
-	while (!q.empty()) {
-		C c = q.front();
-		q.pop();
-		int a = c.x;
-		int b = c.y;
-		int d = c.dis;
-		ans[a][b] = d;
+	while (start != end) {
+		cur = q[start++];
+		int a = cur.x;
+		int b = cur.y;
+		int d = cur.dis;
+		dist[a][b] = d;
 
 		for (int i = 0; i < 4; i++) {
 			int nx = a + dx[i];
 			int ny = b + dy[i];
-			if (issafe(nx, ny)) {
+			if (isSafe(nx, ny)) {
 				vis[nx][ny] = 1;
-				in.x = nx;
-				in.y = ny;
-				in.dis = d + 1;
-				q.push(in);
+				cur.x = nx;
+				cur.y = ny;
+				cur.dis = d + 1;
+				q[end++] = cur;
 			}
 		}
 
@@ -82,44 +90,41 @@ int main() {
 			cin >> a[i][j];
 		}
 	}
-
+	int q;
 	cin >> q;
-	P rare[q];
-
-	int fans = 10000;
-	int mx = -1;
+	Point rare[q];
 
 	for (int i = 0; i < q; i++) {
 		int a, b;
 		cin >> a >> b;
-
 		rare[i].x = a;
 		rare[i].y = b;
 	}
 
+	int ans = 10000;
 
 	for (int i = 0; i < n; i++)	{
 		for (int j = 0; j < n; j++) {
-			memset(ans, 10000, sizeof(ans));
-			int flag = 0;
-			memset(vis, 0, sizeof(vis));
-			mx = -1;
+			init();
+			bool flag = false;
+			int mx = -1;
 			if (a[i][j] == 1) {
 				bfs(i, j);
 				for (int k = 0; k < q; k++) {
-					if (ans[rare[k].x][rare[k].y] == 10000) {
-						flag = 1;
+					if (dist[rare[k].x][rare[k].y] == 10000) {
+						flag = true;
 						break;
 					}
 				}
 				if (!flag) {
 					for (int k = 0; k < q; k++) {
-						mx = max(mx, ans[rare[k].x][rare[k].y]);
+						mx = max(mx, dist[rare[k].x][rare[k].y]);
 					}
 				}
-				fans = min(fans, mx);
+				ans = min(ans, mx);
 			}
 		}
 	}
-	cout << fans << endl;
+
+	cout << ans << "\n";
 }

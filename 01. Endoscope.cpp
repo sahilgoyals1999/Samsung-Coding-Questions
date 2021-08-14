@@ -24,6 +24,7 @@ bool up(int x1, int y, int x2) {
 	        (a[x2][y] == 1 || a[x2][y] == 2 || a[x2][y] == 5 || a[x2][y] == 6)) return true;
 	return false;
 }
+
 bool down(int x1, int y, int x2) {
 	if (x2 >= row || a[x2][y] == 0 || vis[x1][y] == l || vis[x2][y] != 0) return false;
 
@@ -32,13 +33,13 @@ bool down(int x1, int y, int x2) {
 	return false;
 }
 
-
 bool left(int x, int y1, int y2) {
 	if (y2 < 0 || a[x][y2] == 0 || vis[x][y1] == l || vis[x][y2] != 0) return false;
 	if ((a[x][y1] == 1 || a[x][y1] == 3 || a[x][y1] == 6 || a[x][y1] == 7) &&
 	        (a[x][y2] == 1 || a[x][y2] == 3 || a[x][y2] == 4 || a[x][y2] == 5)) return true;
 	return false;
 }
+
 bool right(int x, int y1, int y2) {
 	if (y2 >= col || a[x][y2] == 0 || vis[x][y1] == l || vis[x][y2] != 0) return false;
 	if ((a[x][y1] == 1 || a[x][y1] == 3 || a[x][y1] == 4 || a[x][y1] == 5) &&

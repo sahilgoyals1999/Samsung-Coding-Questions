@@ -2,7 +2,7 @@
 
 There is one spaceship.
 X and Y co-ordinate of the source of spaceship and destination spaceship is given.
-There is N number of wormholes; each wormhole has 5 values.
+There is N number of wormholes, each wormhole has 5 values.
 First 2 values are starting co-ordinate of the wormhole and after that value
 no. 3 and 4 represent ending co-ordinate of the wormhole and
 last 5th value is represents a cost to pass through this wormhole.

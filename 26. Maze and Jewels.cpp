@@ -9,15 +9,15 @@ When locations of a maze and jewels are given,
 find out the greatest number of jewels you can get without taking the same passage twice,
 and the path taken in this case.
 
-Input
-There can be more than one test case in the input file.
+Input:
+
 The first line has T, the number of test cases.
 Then the totally T test cases are provided in the following lines (T ≤ 10 ).
 
 In each test case, In the first line,
 the size of the maze N (1 ≤ N ≤ 10) is given.
 The maze is N×N square-shaped. From the second line through N lines,
-information of the maze is given. “0” means a passage, “1” means a wall, and “2” means a location of a jewel.
+information of the maze is given. '0' means a passage, '1' means a wall, and '2' means a location of a jewel.
 The entrance is located on the upper-most left passage and the exit is located on the lower-most right passage.
 There is no case where the path from the entrance to the exit doesn’t exist.
 
@@ -50,37 +50,43 @@ using namespace std;
 
 int n, a[101][101], dp[101][101];
 bool vis[101][101];
-int dx[4] = { -1, 1, 0, 0};
-int dy[4] = {0, 0, -1, 1};
+int dx[4] = {0, 0, -1, +1};
+int dy[4] = { -1, +1, 0, 0};
 
 bool isValid(int x, int y) {
 	return (x >= 0 && x < n && y >= 0 && y < n && vis[x][y] == false);
 }
 
-void solve(int cost, int currx, int curry, int desx, int desy, int &mx) {
-	if (currx == desx && curry == desy) {
+void solve(int cost, int cur_x, int cur_y, int des_x, int des_y, int &mx) {
+	if (cur_x == des_x && cur_y == des_y) {
 		if (cost > mx) {
 			mx = cost;
-			for (int i = 0; i < n; i++)
-				for (int j = 0; j < n; j++)
-					if (vis[i][j])
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < n; j++) {
+					if (vis[i][j]) {
 						dp[i][j] = 3;
-					else dp[i][j] = a[i][j];
+					}
+					else {
+						dp[i][j] = a[i][j];
+					}
+				}
+			}
 		}
 		return;
 	}
-	for (int k = 0; k < 4; k++) {
-		if (isValid(currx + x[k], curry + y[k])) {
-			int tempx = currx + x[k];
-			int tempy = curry + y[k];
-			vis[tempx][tempy] = true;
-			if (a[tempx][tempy] == 0) {
-				solve(cost, tempx, tempy, desx, desy, mx);
+
+	for (int ind = 0; ind < 4; ind++) {
+		int nx = cur_x + dx[ind];
+		int ny = cur_y + dy[ind];
+		if (isValid(nx, ny)) {
+			vis[nx][ny] = true;
+			if (a[nx][ny] == 0) {
+				solve(cost, nx, ny, des_x, des_y, mx);
 			}
-			else if (a[tempx][tempy] == 2) {
-				solve(cost + 1, tempx, tempy, desx, desy, mx);
+			else if (a[nx][ny] == 2) {
+				solve(cost + 1, nx, ny, des_x, des_y, mx);
 			}
-			vis[tempx][tempy] = false;
+			vis[nx][ny] = false;
 		}
 	}
 }

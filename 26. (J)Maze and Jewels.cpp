@@ -10,7 +10,6 @@ find out the greatest number of jewels you can get without taking the same passa
 and the path taken in this case.
 
 Input:
-
 The first line has T, the number of test cases.
 Then the totally T test cases are provided in the following lines (T ≤ 10 ).
 
@@ -21,7 +20,7 @@ information of the maze is given. '0' means a passage, '1' means a wall, and '2'
 The entrance is located on the upper-most left passage and the exit is located on the lower-most right passage.
 There is no case where the path from the entrance to the exit doesn’t exist.
 
-Output
+Output:
 From the first line through N lines,
 mark the path with 3 and output it. In N+1 line,
 output the greatest number of jewels that can be picked up.
@@ -43,12 +42,27 @@ Input:
 0 1 0 1 0 1
 2 0 2 1 0 0
 
+Output:
+3 0 3 3 3
+3 1 3 1 3
+3 0 3 2 3
+3 1 3 1 3
+3 3 3 0 3
+6
+3 1 2 1 0 0
+3 1 3 3 3 1
+3 1 3 1 3 1
+3 2 3 1 3 2
+3 1 3 1 3 1
+3 3 3 1 3 3
+4
+
 */
 
 #include <iostream>
 using namespace std;
 
-int n, a[101][101], dp[101][101];
+int n, a[101][101], ans[101][101];
 bool vis[101][101];
 int dx[4] = {0, 0, -1, +1};
 int dy[4] = { -1, +1, 0, 0};
@@ -64,10 +78,10 @@ void solve(int cost, int cur_x, int cur_y, int des_x, int des_y, int &mx) {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
 					if (vis[i][j]) {
-						dp[i][j] = 3;
+						ans[i][j] = 3;
 					}
 					else {
-						dp[i][j] = a[i][j];
+						ans[i][j] = a[i][j];
 					}
 				}
 			}
@@ -95,13 +109,13 @@ int main() {
 	int t;
 	cin >> t;
 	while (t--) {
-		int mx = -123;
+		int mx = -10000000;
 		cin >> n;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				cin >> a[i][j];
 				vis[i][j] = false;
-				dp[i][j] = a[i][j];
+				ans[i][j] = a[i][j];
 			}
 		}
 		vis[0][0] = true;
@@ -114,7 +128,7 @@ int main() {
 		vis[0][0] = false;
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				cout << dp[i][j] << " ";
+				cout << ans[i][j] << " ";
 			}
 			cout << "\n";
 		}

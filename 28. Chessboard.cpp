@@ -17,121 +17,87 @@ For each test case, you should print "Case #T" in the first line where T means t
 For each test case, you should output the minimum number of movements to catch a defending piece at the first line of each test case.
 If not moveable, output equals ‘-1’
 
+Input:
+1
+7 13
+2 8 3 4
+
+Output:
+Case #1 3
+
 */
 
-import java.util.Scanner;
+#include <iostream>
+using namespace std;
 
-class Piece {
-	int sourceX;
-	int sourceY;
+class qpair {
+public:
+	int x, y;
 
-	Piece() {
+	qpair() {
 
 	}
 
-	Piece(int sourceX, int sourceY) {
-		this.sourceX = sourceX;
-		this.sourceY = sourceY;
+	qpair(int x, int y) {
+		this->x = x;
+		this->y = y;
 	}
-}
+};
 
-class Queue {
-	int front, rear, size;
-	int capacity;
-	Piece[] arr;
+int n, m;
 
-	Queue(int capacity) {
-		this.front = this.size = 0;
-		this.capacity = capacity;
-		this.rear = this.capacity - 1;
-		this.arr = new Piece[capacity];
-		for (int i = 0; i < this.arr.length; i++) {
-			this.arr[i] = new Piece();
-		}
-	}
+qpair q[1000001];
+int start = 0, en = 0;
+int vis[1001][1001];
 
-	void enQueue(Piece piece) {
-		if (this.size == this.capacity) {
-			return;
-		}
-		this.rear = (this.rear + 1) % this.capacity;
-		this.arr[this.rear] = piece;
-		this.size++;
-	}
+int dx[8] = { -2, -2, -1, -1, 1, 1, 2, 2};
+int dy[8] = { -1, 1, -2, 2, -2, 2, -1, 1};
 
-	Piece deQueue() {
-		if (this.size == 0) {
-			return null;
-		}
-		Piece piece = this.arr[this.front];
-		this.front = (this.front + 1) % this.capacity;
-		this.size--;
-		return piece;
-	}
-}
+int solve(int src_x, int src_y, int dest_x, int dest_y) {
+	if (src_x == dest_x && src_y == dest_y) return 0;
 
-public class chessboard {
-	static Piece defendingPience;
-	static int[][] boardPositions;
-	static boolean[][] visitedPositions;
-	static int[] rowMove = new int[] { 1, -1, 1, -1, 2, 2, -2, -2 };
-	static int[] columnMove = new int[] { 2, 2, -2, -2, 1, -1, 1, -1 };
-	static int movesToKill = 0;
+	int ans = 0;
+	qpair curr(src_x, src_y);
+	q[en++] = curr;
+	vis[src_x][src_y] = 1;
+	while (start != en) {
+		int currSize = en - start;
+		while (currSize--) {
+			curr.x = q[start].x;
+			curr.y = q[start].y;
+			start++;
 
-	static boolean isValid(int row, int column) {
-		if (row < 1 || column < 1 || row >= boardPositions.length || column >= boardPositions[0].length
-		        || visitedPositions[row][column]) {
-			return false;
-		}
-		return true;
-	}
+			if (curr.x == dest_x && curr.y == dest_y) return ans;
 
-	static int movesToKill(int sourceX, int sourceY) {
-		Queue queue = new Queue(100);
-		Piece piece = new Piece(sourceX, sourceY);
-		queue.enQueue(piece);
-		boardPositions[sourceX][sourceY] = 0;
-		while (queue.size != 0) {
-			Piece poppedPiece = queue.deQueue();
-			visitedPositions[poppedPiece.sourceX][poppedPiece.sourceY] = true;
-			for (int i = 0; i < 8; i++) {
-				int row = poppedPiece.sourceX + rowMove[i];
-				int column = poppedPiece.sourceY + columnMove[i];
-				if (isValid(row, column)) {
-					boardPositions[row][column] += boardPositions[poppedPiece.sourceX][poppedPiece.sourceY];
-					queue.enQueue(new Piece(row, column));
-				}
-				if (row == defendingPience.sourceX && column == defendingPience.sourceY) {
-					return boardPositions[row][column];
+			for (int ind = 0; ind < 8; ind++) {
+				int i = curr.x + dx[ind];
+				int j = curr.y + dy[ind];
+				if (i <= n && j <= m && i > 0 && j > 0 && !vis[i][j]) {
+					vis[i][j] = 1;
+					qpair temp(i, j);
+					q[en++] = temp;
 				}
 			}
-
 		}
-
-		return -1;
+		ans++;
 	}
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int rows = sc.nextInt();
-		int columns = sc.nextInt();
-		boardPositions = new int[rows][columns];
-		visitedPositions = new boolean[rows][columns];
+	return -1;
+}
 
-		for (int i = 1; i < rows; i++) {
-			for (int j = 1; j < columns; j++) {
-				boardPositions[i][j] = 1;
-				visitedPositions[i][j] = false;
+int main() {
+	int t;
+	cin >> t;
+	for (int k = 1; k <= t; ++k) {
+		start = 0, en = 0;
+		for (int i = 0; i < 1001; ++i) {
+			for (int j = 0; j < 1001; ++j) {
+				vis[i][j] = 0;
 			}
 		}
-		int sourceX = sc.nextInt();
-		int sourceY = sc.nextInt();
-		Piece attackingPiece = new Piece(sourceX, sourceY);
-		sourceX = sc.nextInt();
-		sourceY = sc.nextInt();
-		sc.close();
-		defendingPience = new Piece(sourceX, sourceY);
-
-		System.out.println("Moves to Kill " + movesToKill(attackingPiece.sourceX, attackingPiece.sourceY));
+		cin >> n >> m;
+		int src_x, src_y, dest_x, dest_y;
+		cin >> src_x >> src_y >> dest_x >> dest_y;
+		cout << "Case #" << k << " " << solve(src_x, src_y, dest_x, dest_y) << "\n";
 	}
 }

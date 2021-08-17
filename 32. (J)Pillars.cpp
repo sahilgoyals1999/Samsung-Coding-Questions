@@ -1,6 +1,6 @@
 /*
 
-Jitesh ji
+Make 2 pillars of equal length.
 
 */
 
@@ -15,11 +15,8 @@ void solve(int i, int s1, int s2) {
 	}
 	if (i < n) {
 		solve(i + 1, s1, s2);
-		s1 += a[i];
-		solve(i + 1, s1, s2);
-		s1 -= a[i];
-		s2 += a[i];
-		solve(i + 1, s1, s2);
+		solve(i + 1, s1 + a[i], s2);
+		solve(i + 1, s1, s2 + a[i]);
 	}
 }
 

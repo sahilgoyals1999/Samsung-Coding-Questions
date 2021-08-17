@@ -1,4 +1,5 @@
 /*
+
 You are busy to promote a newly released film in a movie theatre .
 the title is 'Biochemical Laughing Bomb' which is about terror.
 Guerillas drop a biochemical laughing bomb in the middle of a city.
@@ -18,119 +19,89 @@ The coordinate of the row and column on which the bomb fall is given by being se
 Output
 For each test case, you should print "Case #T" in the first line where T means the case number.
 For each test case, you should output how long does it take to contaminate al people on the first row of each test case.
+
+Input:
+1
+4 4
+1 0 0 1
+1 0 0 1
+0 1 1 1
+0 0 1 1
+1 1
+
+Output:
+Case #1 5
+
 */
-import java.util.Scanner;
 
-class Bomb {
-    int sourceX;
-    int sourceY;
+#include <iostream>
+using namespace std;
 
-    Bomb(int sourceX, int sourceY) {
-        this.sourceX = sourceX;
-        this.sourceY = sourceY;
-    }
-}
+class qpair {
+public:
+    int x, y;
 
-class People {
-    int sourceX;
-    int sourceY;
-    int timeOfLaugh;
+    qpair() {
 
-}
-
-class Queue {
-    int front, rear, size;
-    int capacity;
-    People[] arr;
-
-    Queue(int capacity) {
-        this.front = this.size = 0;
-        this.capacity = capacity;
-        this.rear = this.capacity - 1;
-        this.arr = new People[capacity];
-        for (int i = 0; i < this.arr.length; i++) {
-            this.arr[i] = new People();
-        }
     }
 
-    void enQueue(People people) {
-        if (this.size == this.capacity) {
-            return;
-        }
-        this.rear = (this.rear + 1) % this.capacity;
-        this.arr[this.rear] = people;
-        this.size++;
+    qpair(int x, int y) {
+        this->x = x;
+        this->y = y;
     }
+};
 
-    People deQueue() {
-        if (this.size == 0) {
-            return null;
-        }
-        People people = this.arr[this.front];
-        this.front = (this.front + 1) % this.capacity;
-        this.size--;
-        return people;
-    }
-}
+int n, m;
+int a[101][101];
+int bomb_x, bomb_y;
+int dx[4] = { -1, 0, 0, 1};
+int dy[4] = {0, -1, 1, 0};
 
-public class bioChemicalLaughingBomb {
-    static int[][] peoplePositions;
-    static boolean[][] visitedPeople;
-    static int[] rowMove = new int[] { 1, -1, 0, 0 };
-    static int[] columnMove = new int[] { 0, 0, 1, -1 };
-    static int timeToExplode = 0;
+qpair q[10001];
+int start = 0, en = 0;
+int vis[101][101];
 
-    static boolean isValid(int row, int column) {
-        if (row < 0 || column < 0 || row >= peoplePositions.length || column >= peoplePositions[0].length
-                || visitedPeople[row][column] || peoplePositions[row][column] == 0) {
-            return false;
-        }
-        return true;
-    }
+int solve() {
+    a[bomb_x][bomb_y] = 2;
+    qpair curr(bomb_x, bomb_y);
+    q[en++] = curr;
+    int ans = 0;
+    while (start != en) {
+        int currSize = en - start;
+        while (currSize--) {
+            curr.x = q[start].x;
+            curr.y = q[start].y;
+            start++;
 
-    static int timeToExplode(int sourceX, int sourceY) {
-        Queue queue = new Queue(100);
-        People people = new People();
-        people.sourceX = sourceX;
-        people.sourceY = sourceY;
-        people.timeOfLaugh = 0;
-        queue.enQueue(people);
-
-        while (queue.size != 0) {
-            People popped = queue.deQueue();
-            visitedPeople[popped.sourceX][popped.sourceY] = true;
-            timeToExplode = popped.timeOfLaugh;
-            for (int i = 0; i < 4; i++) {
-                People surroundingPerson = new People();
-                surroundingPerson.sourceX = popped.sourceX + rowMove[i];
-                surroundingPerson.sourceY = popped.sourceY + columnMove[i];
-                surroundingPerson.timeOfLaugh = popped.timeOfLaugh + 1;
-                if (isValid(surroundingPerson.sourceX, surroundingPerson.sourceY)) {
-                    queue.enQueue(surroundingPerson);
+            for (int ind = 0; ind < 4; ind++) {
+                int i = curr.x + dx[ind];
+                int j = curr.y + dy[ind];
+                if (i < n && j < m && i >= 0 && j >= 0 && a[i][j] == 1) {
+                    a[i][j] = 2;
+                    qpair temp(i, j);
+                    q[en++] = temp;
                 }
             }
         }
-        return timeToExplode;
+        if (start != en) ans++;
     }
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int rows = sc.nextInt();
-        int columns = sc.nextInt();
-        peoplePositions = new int[rows][columns];
-        visitedPeople = new boolean[rows][columns];
+    return ans;
+}
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                peoplePositions[i][j] = sc.nextInt();
-                visitedPeople[i][j] = false;
+int main() {
+    int t;
+    cin >> t;
+    for (int k = 1; k <= t; ++k) {
+        cin >> n >> m;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                cin >> a[i][j];
+                vis[i][j] = 0;
             }
         }
-        int sourceX = sc.nextInt();
-        int sourceY = sc.nextInt();
-        sc.close();
-        Bomb bomb = new Bomb(sourceX, sourceY);
-
-        System.out.println("Time to Explode " + timeToExplode(bomb.sourceX, bomb.sourceY) + " second/s");
+        cin >> bomb_x >> bomb_y;
+        cout << "Case #" << k << " " << solve() << "\n";
     }
+    return 0;
 }

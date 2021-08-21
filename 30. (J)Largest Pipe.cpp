@@ -1,5 +1,7 @@
 /*
 
+https://gist.github.com/hunarjain/931c3d01f7594b5b1bb19e71dccf347b
+
 Given number of pipes 1..n,
 Find two largest pipes of maximum length possible.
 Input: 1,2,3,4,6

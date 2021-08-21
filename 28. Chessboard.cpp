@@ -1,5 +1,7 @@
 /*
 
+https://gist.github.com/hunarjain/81ef3e32e57ef3299e37e211e0d29292
+
 There is a mobile piece and a stationary piece on the N×M chessboard.
 The available moves of the mobile piece are the same as set out in the image below.
 You need to capture the stationary piece by moving the mobile piece with the minimum amount of moves.

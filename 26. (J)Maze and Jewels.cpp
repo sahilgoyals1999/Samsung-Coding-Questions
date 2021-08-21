@@ -1,5 +1,7 @@
 /*
 
+https://gist.github.com/hunarjain/5e4a87b2e4d06d2c92ffbcfc8d2b4d86
+
 There is a maze that has one entrance and one exit.
 Jewels are placed in passages of the maze.
 You want to pick up the jewels after getting into the maze through the entrance and before getting out of it through the exit.

@@ -1,5 +1,7 @@
 /*
 
+https://gist.github.com/hunarjain/8dc698133576d7d71ff0607608837e06
+
 You are busy to promote a newly released film in a movie theatre .
 the title is 'Biochemical Laughing Bomb' which is about terror.
 Guerillas drop a biochemical laughing bomb in the middle of a city.

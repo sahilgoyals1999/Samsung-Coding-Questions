@@ -21,7 +21,7 @@ Output:
 
 */
 
-#include<iostream>
+#include <iostream>
 using namespace std;
 
 // To find next left balloon that is not burst

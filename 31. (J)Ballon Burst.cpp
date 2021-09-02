@@ -2,10 +2,6 @@
 
 https://gist.github.com/gunpreet34/c0ac4fea06671ff9017263a1ee03648c
 
-https://leetcode.com/problems/burst-balloons/
-
-https://www.youtube.com/watch?v=YzvF8CqPafI
-
 There are n balloons and n bullets and each balloon is assigned with a particular number (point).
 Whenever a particular balloon is shot the no of points increases by
 
@@ -17,6 +13,7 @@ Whenever a particular balloon is shot the no of points increases by
 You have to output the maximum no of points possible.
 
 Input:
+4
 1 2 3 4
 
 Output:
@@ -24,46 +21,80 @@ Output:
 
 */
 
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
 
-int maxi(int x, int y) {
-	if (x > y) return x;
-	return y;
+// To find next left balloon that is not burst
+int findLeft(int a[], int n, int j, bool isBurst[], bool &found) {
+	if (j <= 0) {
+		found = false;
+		return 1;
+	}
+	for (int i = j - 1; i >= 0; i--) {
+		if (!isBurst[i]) {
+			return a[i];
+		}
+	}
+	found = false;
+	return 1; // If no ballon found return 1
+}
+
+// To find next right balloon that is not burst
+int findRight(int a[], int n, int j, bool isBurst[], bool &found) {
+	if (j >= n) {
+		found = false;
+		return 1;
+	}
+	for (int i = j + 1; i < n; i++) {
+		if (!isBurst[i]) {
+			return a[i];
+		}
+	}
+	found = false;
+	return 1; // If no ballon found return 1
+}
+
+int calc(int a[], int n, int j, bool isBurst[]) { //Calculate points to burst the current balloon
+	int points = 0;
+	bool leftFound = true, rightFound = true; //To check if balloons exist to the left and right of current balloon
+	int left = findLeft(a, n - 1, j, isBurst, leftFound);
+	int right = findRight(a, n - 1, j, isBurst, rightFound);
+	if (!leftFound && !rightFound) { //If current balloon is the last balloon
+		points += a[j];
+	}
+	else {
+		points += (left * right);
+	}
+	return points;
+}
+
+void maxPoints(int a[], int n, int cp, int curr_ans, int &ans, int count, bool isBurst[]) {
+	if (count == n) { //If number of balloons burst equals total number of balloons
+		if (curr_ans > ans) {
+			ans = curr_ans;
+			return;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (!isBurst[i]) {
+			isBurst[i] = true;
+			maxPoints(a, n, i, curr_ans + calc(a, n, i, isBurst), ans, count + 1, isBurst);
+			isBurst[i] = false;
+		}
+	}
 }
 
 int main() {
-	int n;
+	int n, ans = 0;
 	cin >> n;
-	int i, a[n + 9];
-	a[0] = 1;
-	a[n + 1] = 1;
-	for (i = 1; i <= n; i++) {
+	int a[n];
+	bool isBurst[n];
+	for (int i = 0; i < n; i++) {
 		cin >> a[i];
+		isBurst[i] = false;
 	}
-	int dp[n + 9][n + 9];
-	for (i = 0; i < n + 2; i++) {
-		for (int j = 0; j < n + 2; j++) {
-			dp[i][j] = 0;
-		}
-	}
-
-	// Calculate dp
-	n = n + 2;
-	for (int k = 2; k < n; k++) {
-		for (int left = 0; left < n - k; left++) {
-			int right = left + k;
-			for (int i = left + 1; i < right; i++) {
-				int temp;
-				if (left == 0 && right == n - 1) {
-					temp = (a[i] * a[left] * a[right] + dp[left][i] + dp[i][right]);
-				}
-				else {
-					temp = (a[left] * a[right] + dp[left][i] + dp[i][right]);
-				}
-				dp[left][right] = maxi(dp[left][right], temp);
-			}
-		}
-	}
-	cout << dp[0][n - 1];
+	maxPoints(a, n, 0, 0, ans, 0, isBurst);
+	cout << ans;
+	return 0;
 }

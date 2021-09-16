@@ -6,7 +6,7 @@ https://discuss.codechef.com/t/help-needed-for-a-bfs-problem/36778
 
 You are given an old touch smartphone numbers having dial pad and calculator app.
 The goal is to type a number on dial-pad.
-Calculator have 1-9 and +, -, * , /, = as operations.
+Calculator have 0-9 and +, -, * , /, = as operations.
 But as the phone is old, some of the numbers and some operations can't be touched.
 But you can always make a number using other numbers and operations.
 There could be multiple ways of making a number.
@@ -31,23 +31,20 @@ Output:
 Output contains 1 line printing the number of touches required to make the number
 
 Sample Test Case:
-4 // no. of test cases
 
+4
 5 3 5
 1 2 4 6 0
 1 2 3
 5
-
 6 4 5
 1 2 4 6 9 8
 1 2 3 4
 91
-
-6 2 4
+6 3 4
 0 1 3 5 7 9
 1 2 4
 28
-
 5 2 10
 1 2 6 7 8
 2 3
@@ -56,7 +53,108 @@ Sample Test Case:
 Output:
 4 // 1+4= , "=" is also counted as a touch
 2 // 91 can be made by directly entering 91 as 1,9 digits are working, so only 2 operations
-5 // 35-7=, other ways are 1+3*7=
+5 // 35-7=, other ways are 1+3*9=
 9 // 62*16-11=
 
 */
+
+#include <iostream>
+using namespace std;
+
+int digits[10], opr[5];
+int ans = 100000;
+int n, m, o;
+
+int calc(int prev, int curr, int op) {
+	if (prev == -10000000) {
+		return curr;
+	}
+	if (op == 1) {
+		return prev + curr;
+	}
+	if (op == 2) {
+		return prev - curr;
+	}
+	if (op == 3) {
+		return prev * curr;
+	}
+	if (op == 4) {
+		if (curr == 0) return -1;
+		else return prev / curr;
+	}
+	return -10000000;
+}
+
+bool isDone(int prev, int curr, int op, int target) {
+	if (op == 4 && curr == 0) return false;
+	return (calc(prev, curr, op) == target);
+}
+
+void findMinTouch(int prev, int curr, int op, int tou, int target) {
+	if (op != -1 && curr != -10000000) {
+		bool flag = isDone(prev, curr, op, target);
+		if (flag && tou < o) {
+			if (tou + 1 < ans) {
+				ans = tou + 1;
+			}
+		}
+	}
+
+	if (prev == target && tou < o && op != -1 && curr == -10000000) {
+		if (tou < ans) {
+			ans = tou;
+		}
+	}
+
+	if (op == -1 && curr == target && tou < o) {
+		if (tou < ans) {
+			ans = tou;
+		}
+	}
+
+	if (tou > o) return;
+
+	for (int i = 0; i < m; i++) {
+		if (curr == -10000000) break; // if no operand
+		if (curr == 0 && op == 4) continue; // divide by 0
+		int val = calc(prev, curr, op);
+		findMinTouch(val, -10000000, opr[i], tou + 1, target);
+	}
+
+	for (int i = 0; i < n; i++) {
+		if (curr == -10000000) { // select operand
+			findMinTouch(prev, digits[i], op, tou + 1, target);
+		}
+		else {
+			int val = abs(curr);
+			val = val * 10 + digits[i];
+			if (curr < 0) {
+				val *= -1;
+			}
+			findMinTouch(prev, val, op, tou + 1, target);
+		}
+	}
+}
+
+int main() {
+	int t;
+	cin >> t;
+	for (int j = 1; j <= t; ++j) {
+		ans = 10000000;
+		cin >> n >> m >> o;
+		for (int i = 0; i < n; i++) {
+			cin >> digits[i];
+		}
+		for (int i = 0; i < m; i++) {
+			cin >> opr[i];
+		}
+
+		int target;
+		cin >> target;
+
+		findMinTouch(-10000000, -10000000, -1, 0, target);
+
+		cout << "#" << j << ": " << ans << "\n";
+	}
+	return 0;
+}

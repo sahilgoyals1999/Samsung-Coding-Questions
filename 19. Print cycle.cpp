@@ -7,57 +7,126 @@ Given a graph question. We have to find the loop in the graph if it exists and p
 #include <iostream>
 using namespace std;
 
-int g[1001][1001];
-int visited[1001];
-int n, currColour;
+int a[100][100], n;
 
-void printCycle() {
-	for (int i = 0; i < n; i++) {
-		if (visited[i] == currColour) cout << i << " ";
-	}
-	cout << "\n";
-}
+bool findcycle(int st, bool visited[], int parent, int &prev) {
+	visited[st] = true;
 
-bool helper(int sv, int prev) {
-	visited[sv] = currColour;
+	for (int j = 0; j < n; j++) {
 
-	for (int i = 0; i < n; i++) {
-		if (g[sv][i] && visited[i] >= currColour) {
-			if (visited[i] == currColour) {
-				if (i != prev) return true;
-				else continue;
+		if (a[st][j] == 1 && visited[j] == false) {
+
+			if ( findcycle(j, visited, st, prev) ) {
+				if (st == prev) {
+					cout << st << " ";
+					prev = -1;
+				}
+				else if (prev != -1) {
+					cout << st << " ";
+				}
+
+				return true;
 			}
 
-			if (helper(i, sv)) return true;
+		}
+		else if (a[st][j] == 1 && parent != j && visited[j] == true) {
+			cout << st << " ";
+			prev = j;
+			return true;
+		}
+
+	}
+	return false;
+}
+
+int main() {
+	memset(a, 0, sizeof(a));
+	int m;
+	cin >> n >> m;
+
+	int x, y;
+	while (m--) {
+		cin >> x >> y;
+		a[x][y] = 1;
+		a[y][x] = 1;
+	}
+
+	bool visited[n] = {false};
+	int parent = -1, prev = -1;
+	findcycle(0, visited, parent, prev);
+
+	return 0;
+}
+
+/*
+
+Directed
+
+*/
+
+#include<iostream>
+using namespace std;
+
+int graph[100][100];
+int n;
+
+bool dfs( int node , bool *visited , bool *inloop , int &prev ) {
+	visited[node] = 1;
+	inloop[node] = 1;
+	for (int i = 0; i < n; i++) {
+		if ( graph[node][i]) {
+			if (!visited[i]) {
+				if (dfs( i , visited , inloop , prev)) {
+
+					if (i == prev)
+						cout << i << " " , prev = -1;
+					else if (prev != -1)
+						cout << i << " ";
+
+					return true;
+				}
+			}
+			else if ( inloop[i] ) {
+				prev = i;
+				return true;
+			}
 		}
 	}
+
+	inloop[node] = 0;
+	return false;
+}
+
+bool checkCycle (bool *visited) {
+	int prev = -1;
+	bool inloop[n] = {false};
+
+	for (int i = 0; i < n; i++)
+		if ( !visited[i] && dfs(i, visited, inloop, prev))
+			return true;
 
 	return false;
 }
 
-void cycle() {
-	currColour = 0;
-	for (int i = 0; i < n; i++) {
-		visited[i] = 1000000;
-	}
-
-	for (int i = 0; i < n; i++) {
-		if (visited[i] == 1000000) {
-			if (helper(i, -1)) {
-				printCycle();
-			}
-			currColour++;
-		}
-	}
-}
-
 int main() {
+	// Input nodes
 	cin >> n;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cin >> g[i][j];
-		}
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++)
+			graph[i][j] = 0;
+
+	// Input Edges
+	int t;
+	cin >> t;
+	int x, y;
+	for (int i = 0; i < t; i++) {
+		cin >> x >> y;
+		graph[x][y] = 1;
 	}
 
-	cycle();
+	bool visited[n] = {false};
+
+	cout << checkCycle(visited) << endl;
+
+	return 0;
 }

@@ -16,18 +16,20 @@ int a[1000][10001], color[10001], x, y;
 
 bool check(int src) {
 	int q[10001];
-	color[i] = 0;
+	color[src] = 0;
 	int start = 0, end = 0;
 	q[end++] = src;
 	while (start != end) {
 		int x = q[start++];
 		for (int i = 0; i < nodes; i++) {
-			if (a[x][i] == 1 && color[i] == -1) {
-				color[i] = 1 - color[x];
-				q[end++] = i;
-			}
-			else if (a[x][i] == 1 && color[i] == color[x]) {
-				return false;
+			if (a[x][i] == 1)  {
+				if (color[i] == -1) {
+					color[i] = 1 - color[x];
+					q[end++] = i;
+				}
+				else if (color[i] == color[x]) {
+					return false;
+				}
 			}
 		}
 	}

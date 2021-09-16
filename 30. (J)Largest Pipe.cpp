@@ -14,14 +14,17 @@ using namespace std;
 
 int dp[1001][1001];
 
-int findMinRec(int arr[], int i, int sumCalculated, int sumTotal) {
-	if (i == 0) {
-		return abs((sumTotal - sumCalculated) - sumCalculated);
+int findMinRec(int arr[], int i, int cur_sum, int sumTotal) {
+	if (i < 0) {
+		return abs((sumTotal - cur_sum) - cur_sum);
+	}
+	if (dp[i][cur_sum] != -1) {
+		return dp[i][cur_sum];
 	}
 
-	int incl = findMinRec(arr, i - 1, sumCalculated + arr[i - 1], sumTotal);
-	int excl = findMinRec(arr, i - 1, sumCalculated, sumTotal);
-	return dp[i][sumCalculated] = min(incl, excl);
+	int incl = findMinRec(arr, i - 1, cur_sum + arr[i], sumTotal);
+	int excl = findMinRec(arr, i - 1, cur_sum, sumTotal);
+	return dp[i][cur_sum] = min(incl, excl);
 }
 
 int main() {
@@ -39,58 +42,17 @@ int main() {
 			sumTotal += arr[i];
 		}
 
-		int diff = findMinRec(arr, n, 0, sumTotal);
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j <= sumTotal; ++j) {
+				dp[i][j] = -1;
+			}
+		}
+
+		int diff = findMinRec(arr, n - 1, 0, sumTotal);
 
 		int ans1 = (sumTotal - diff) / 2;
 		int ans2 = (sumTotal - ans1);
 
 		cout << ans1 << " " << ans2 << "\n";
 	}
-
-	// int dp[1005][1005];
-	// int dp1[1005][1005];
-
-	// for (int i = 0; i <= 1000; i++) {
-	// 	for (int j = 0; j <= 1000; j++) {
-	// 		dp[i][j] = 0;
-	// 	}
-	// }
-
-	// dp[0][0] = 1;
-	// for (int i = 1; i <= n; i++) {
-	// 	for (int j = 0; j <= 1000; j++) {
-	// 		for (int k = 0; k <= 1000; k++) {
-	// 			if (j >= arr[i]) {
-	// 				if (dp[j - arr[i]][k]) {
-	// 					dp1[j][k] = 1;
-	// 				}
-	// 			}
-	// 			if (k >= arr[i]) {
-	// 				if (dp[j][k - arr[i]]) {
-	// 					dp1[j][k] = 1;
-	// 				}
-	// 			}
-	// 			if (dp[j][k]) {
-	// 				dp1[j][k] = 1;
-	// 			}
-	// 		}
-	// 	}
-
-	// 	for (int j = 0; j <= 1000; j++) {
-	// 		for (int k = 0; k <= 1000; k++) {
-	// 			dp[j][k] = dp1[j][k];
-	// 			dp1[j][k] = 0;
-	// 		}
-	// 	}
-	// }
-
-	// int ans = 0;
-	// for (int i = 1; i <= 1000; i++) {
-	// 	if (dp[i][i]) {
-	// 		ans = i;
-	// 	}
-	// }
-	// cout << ans << endl;
-
-	return 0;
 }

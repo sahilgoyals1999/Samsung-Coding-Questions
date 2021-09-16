@@ -13,19 +13,34 @@ int dayofweek(int d, int m, int y) {
 		dm[i] += dm[i - 1];
 	}
 
+	int days = 0;
+
+	if (y % 4 == 0) {
+		if (y % 100 != 0 || (y % 100 == 0 && y % 400 == 0)) {
+			if (m == 2 && d == 29) {
+				days++;
+			}
+			else if (m >= 3) {
+				days++;
+			}
+		}
+	}
+
 	y--;
+	days += y * 365;
+	days += (y / 4 - y / 100 + y / 400);
+
 	m--;
-	int days = y * 365;
-	days += y / 4 - y / 100 + y / 400;
 	if (m >= 1) days += dm[m - 1];
 	days += d;
-
-	return (days % 7);
+	return days % 7;
 }
 
 int main() {
+	int d, m, y;
+	cin >> d >> m >> y;
 	char dd[7][10] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-	int day = dayofweek(18, 8, 2021);
+	int day = dayofweek(d, m, y);
 	cout << dd[day];
 	return 0;
 }

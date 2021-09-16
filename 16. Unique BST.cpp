@@ -20,7 +20,7 @@ int solve(int n, int dp[]) {
 
 int numTrees(int n) {
 	int dp[n + 1];
-	for (int i = 0; i <= n; ++i) {
+	for (int i = 1; i <= n; ++i) {
 		dp[i] = -1;
 	}
 	return solve(n, dp);

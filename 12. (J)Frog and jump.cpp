@@ -14,22 +14,22 @@ int a[101][101], dp[101][101];
 int n, m, sx, sy, dx, dy;
 
 bool isSafe(int i, int j) {
-	return (i >= 0 && i < n && j >= 0 && j < m);
+	return (i >= 0 && i < n && j >= 0 && j < m && a[i][j] == 1);
 }
 
 void solve(int i, int j, int cost) {
 	if (dp[i][j] > cost) {
 		dp[i][j] = cost;
-		if (isSafe(i + 1, j) && a[i + 1][j] == 1) {
+		if (isSafe(i + 1, j)) {
 			solve(i + 1, j, cost + 1);
 		}
-		if (isSafe(i - 1, j) && a[i - 1][j] == 1) {
+		if (isSafe(i - 1, j)) {
 			solve(i - 1, j, cost + 1);
 		}
-		if (isSafe(i, j - 1) && a[i][j - 1] == 1) {
+		if (isSafe(i, j - 1)) {
 			solve(i - 1, j, cost);
 		}
-		if (isSafe(i, j + 1) && a[i][j + 1] == 1) {
+		if (isSafe(i, j + 1)) {
 			solve(i, j + 1, cost);
 		}
 	}

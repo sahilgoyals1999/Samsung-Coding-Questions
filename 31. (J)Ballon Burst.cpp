@@ -19,57 +19,57 @@ Input:
 Output:
 20
 
+3
+2
+1
+4
+
 */
 
 #include <iostream>
 using namespace std;
 
 // To find next left balloon that is not burst
-int findLeft(int a[], int n, int j, bool isBurst[], bool &found) {
-	if (j <= 0) {
-		found = false;
-		return 1;
-	}
+int findLeft(int a[], int n, int j, bool isBurst[]) {
 	for (int i = j - 1; i >= 0; i--) {
 		if (!isBurst[i]) {
-			return a[i];
+			return i;
 		}
 	}
-	found = false;
-	return 1; // If no ballon found return 1
+	return -1;
 }
 
 // To find next right balloon that is not burst
-int findRight(int a[], int n, int j, bool isBurst[], bool &found) {
-	if (j >= n) {
-		found = false;
-		return 1;
-	}
+int findRight(int a[], int n, int j, bool isBurst[]) {
 	for (int i = j + 1; i < n; i++) {
 		if (!isBurst[i]) {
-			return a[i];
+			return i;
 		}
 	}
-	found = false;
-	return 1; // If no ballon found return 1
+	return -1;
 }
 
-int calc(int a[], int n, int j, bool isBurst[]) { //Calculate points to burst the current balloon
-	int points = 0;
-	bool leftFound = true, rightFound = true; //To check if balloons exist to the left and right of current balloon
-	int left = findLeft(a, n - 1, j, isBurst, leftFound);
-	int right = findRight(a, n - 1, j, isBurst, rightFound);
-	if (!leftFound && !rightFound) { //If current balloon is the last balloon
-		points += a[j];
+// Calculate points to burst the current balloon
+int calc(int a[], int n, int j, bool isBurst[]) {
+
+	int left = findLeft(a, n, j, isBurst);
+	int right = findRight(a, n, j, isBurst);
+
+	if (left != -1 && right != -1) {
+		return a[left] * a[right];
 	}
-	else {
-		points += (left * right);
+	else if (left != -1) {
+		return a[left];
 	}
-	return points;
+	else if (right != -1) {
+		return a[right];
+	}
+	return a[j];
 }
 
-void maxPoints(int a[], int n, int cp, int curr_ans, int &ans, int count, bool isBurst[]) {
-	if (count == n) { //If number of balloons burst equals total number of balloons
+void maxPoints(int a[], int n, int curr_ans, int &ans, int count, bool isBurst[]) {
+	// If number of balloons burst equals total number of balloons
+	if (count == n) {
 		if (curr_ans > ans) {
 			ans = curr_ans;
 			return;
@@ -79,7 +79,7 @@ void maxPoints(int a[], int n, int cp, int curr_ans, int &ans, int count, bool i
 	for (int i = 0; i < n; i++) {
 		if (!isBurst[i]) {
 			isBurst[i] = true;
-			maxPoints(a, n, i, curr_ans + calc(a, n, i, isBurst), ans, count + 1, isBurst);
+			maxPoints(a, n, curr_ans + calc(a, n, i, isBurst), ans, count + 1, isBurst);
 			isBurst[i] = false;
 		}
 	}
@@ -94,7 +94,7 @@ int main() {
 		cin >> a[i];
 		isBurst[i] = false;
 	}
-	maxPoints(a, n, 0, 0, ans, 0, isBurst);
+	maxPoints(a, n, 0, ans, 0, isBurst);
 	cout << ans;
 	return 0;
 }

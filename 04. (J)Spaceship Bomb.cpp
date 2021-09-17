@@ -86,15 +86,19 @@ void solve(int row, int col, int coins, int bomb, int effect) {
 }
 
 int main() {
-	int n;
-	cin >> n;
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 5; ++j) {
-			cin >> a[i][j];
+	int t;
+	cin >> t;
+	for (int j = 1; j <= t; ++j) {
+		int n;
+		cin >> n;
+		ans = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < 5; ++j) {
+				cin >> a[i][j];
+			}
 		}
-	}
 
-	solve(n - 1, 2, 0, 1, 0);
-	cout << ans;
+		solve(n - 1, 2, 0, 1, 0);
+		cout << "#" << j << " " << ans << "\n";
+	}
 }

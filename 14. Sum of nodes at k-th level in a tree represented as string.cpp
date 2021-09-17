@@ -19,7 +19,13 @@ int sumAtKthLevel(char a[], int n, int k) {
 		}
 		else {
 			if (level == k) {
-				sum += (a[i] - '0');
+				int val = 0;
+				while (a[i] >= '0' && a[i] <= '9') {
+					val = val * 10 + (a[i] - '0');
+					i++;
+				}
+				i--;
+				sum += val;
 			}
 		}
 	}
@@ -28,10 +34,13 @@ int sumAtKthLevel(char a[], int n, int k) {
 }
 
 int main() {
-	int n, k;
-	cin >> n >> k;
-	char a[n];
-	cin >> a;
+	int k, n = 0;
+	cin >> k;
+	char x;
+	char a[10000];
+	while (cin >> x) {
+		a[n++] = x;
+	}
 	cout << sumAtKthLevel(a, n, k);
 	return 0;
 }

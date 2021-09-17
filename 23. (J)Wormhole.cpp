@@ -37,7 +37,7 @@ int dist(int a, int b, int c, int d) {
 }
 
 void solve(int x, int y, int cost) {
-	if (cost > ans) return;
+	if (cost >= ans) return;
 	if (x == a[n + 1][0] && y == a[n + 1][1]) {
 		if (cost < ans) {
 			ans = cost;
@@ -56,28 +56,32 @@ void solve(int x, int y, int cost) {
 }
 
 int main() {
-	int sx, sy, dx, dy;
-	cin >> sx >> sy >> dx >> dy;
-	// src to src
-	a[0][0] = sx;
-	a[0][1] = sy;
-	a[0][2] = sx;
-	a[0][3] = sy;
-	a[0][4] = 0;
-	cin >> n;
-	for (int i = 1; i <= n; i++) {
-		cin >> a[i][0] >> a[i][1] >> a[i][2] >> a[i][3] >> a[i][4];
+	int t;
+	cin >> t;
+	while (t--) {
+		cin >> n;
+		int sx, sy, dx, dy;
+		cin >> sx >> sy >> dx >> dy;
+		// src to src
+		a[0][0] = sx;
+		a[0][1] = sy;
+		a[0][2] = sx;
+		a[0][3] = sy;
+		a[0][4] = 0;
+		for (int i = 1; i <= n; i++) {
+			cin >> a[i][0] >> a[i][1] >> a[i][2] >> a[i][3] >> a[i][4];
+		}
+		// dest to dest
+		a[n + 1][0] = dx;
+		a[n + 1][1] = dy;
+		a[n + 1][2] = dx;
+		a[n + 1][3] = dy;
+		a[n + 1][4] = 0;
+		ans = abs(dx - sx) + abs(sy - dy);
+		for (int i = 0; i <= n + 1; i++) {
+			vis[i] = false;
+		}
+		solve(sx, sy, 0);
+		cout << ans << "\n";
 	}
-	// dest to dest
-	a[n + 1][0] = dx;
-	a[n + 1][1] = dy;
-	a[n + 1][2] = dx;
-	a[n + 1][3] = dy;
-	a[n + 1][4] = 0;
-	ans = abs(dx - sx) + abs(sy - dy);
-	for (int i = 0; i <= n + 2; i++) {
-		vis[i] = false;
-	}
-	solve(sx, sy, 0);
-	cout << ans << "\n";
 }

@@ -98,9 +98,9 @@ void solve(int cnt, int cur_pos, int sum) {
 }
 
 int main() {
-	int t;
-	cin >> t;
-	while (t--) {
+	int t = 10;
+	// cin >> t;
+	for (int j = 1; j <= t; ++j) {
 		ans = 10000000;
 		cin >> n;
 		cin >> x[0] >> y[0] >> x[n + 1] >> y[n + 1];
@@ -109,6 +109,6 @@ int main() {
 			vis[i] = false;
 		}
 		solve(0, 0, 0);
-		cout << ans << "\n";
+		cout << "# " << j << " " << ans << "\n";
 	}
 }

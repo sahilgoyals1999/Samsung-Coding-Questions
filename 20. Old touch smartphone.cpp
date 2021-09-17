@@ -66,163 +66,67 @@ int digits[10], opr[4];
 int ans;
 
 int calc(int a, int b, int operation) {
-    if(operation == 1) return a+b;
-    else if(operation == 2) return a-b;
-    else if(operation == 3) return a*b;
-    else if(operation == 4) return a/b;
-    else return (a*10)+b;
+    if (operation == 1) return a + b;
+    else if (operation == 2) return a - b;
+    else if (operation == 3) return a * b;
+    else if (operation == 4) return a / b;
+    else return (a * 10) + b;
 }
 
 void helper(int prev, int curr, int operation, int touches) {
-    if(operation == -1) {
-        if(prev == target && touches <= o && touches < ans) {
+    if (operation == -1) {
+        if (prev == target && touches <= o && touches < ans) {
             ans = touches;
         }
     }
-    else if(calc(prev, curr, operation) == target) {
-        if(touches < o && touches + 1 < ans) {
+    else if (calc(prev, curr, operation) == target) {
+        if (touches < o && touches + 1 < ans) {
             ans = touches + 1;
         }
     }
-    
-    if(touches >= o) return;
-    
-    for(int i=0; i<n; i++) {
-        if(operation == -1) helper(calc(prev, digits[i], -1), -1, -1, touches+1);
-        else if(touches >= o-1) continue;
-        else helper(prev, calc(curr, digits[i], -1), operation, touches+1);
-        
-        for(int j=0; j<m; j++) {
-            if(digits[i] == 0 && opr[j] == 4) continue;
-            else if(digits[i] == 0 && curr == -1) break;
-            
-            if(curr == -1) helper(prev, digits[i], opr[j], touches+2);
-            else helper(calc(prev, curr, operation), digits[i], opr[j], touches+2);
+
+    if (touches >= o) return;
+
+    for (int i = 0; i < n; i++) {
+        if (operation == -1) helper(calc(prev, digits[i], -1), -1, -1, touches + 1);
+        else if (touches >= o - 1) continue;
+        else helper(prev, calc(curr, digits[i], -1), operation, touches + 1);
+
+        for (int j = 0; j < m; j++) {
+            if (digits[i] == 0 && opr[j] == 4) continue;
+            else if (digits[i] == 0 && curr == -1) break;
+
+            if (curr == -1) helper(prev, digits[i], opr[j], touches + 2);
+            else helper(calc(prev, curr, operation), digits[i], opr[j], touches + 2);
         }
     }
 }
 
 int main() {
     int t;
-    cin>>t;
-    while(t--) {
-        cin>>n>>m>>o;
-        for(int i=0; i<n; i++) {
-            cin>>digits[i];
+    cin >> t;
+    while (t--) {
+        cin >> n >> m >> o;
+        for (int i = 0; i < n; i++) {
+            cin >> digits[i];
         }
-        for(int i=0; i<m; i++) {
-            cin>>opr[i];
+        for (int i = 0; i < m; i++) {
+            cin >> opr[i];
         }
-        cin>>target;
-        
+        cin >> target;
+
         ans = 1000000000;
-        
-        for(int i=0; i<n; i++) {
-            if(digits[i] == target) ans = 1;
-            else if(digits[i] != 0) helper(digits[i], -1, -1, 1);
+
+        for (int i = 0; i < n; i++) {
+            if (digits[i] == target) {
+                ans = 1;
+                break;
+            }
+            else if (digits[i] != 0) {
+                helper(digits[i], -1, -1, 1);
+            }
         }
-        
-        cout<<ans<<"\n";
+
+        cout << ans << "\n";
     }
 }
-
-// #include <iostream>
-// using namespace std;
-
-// int digits[10], opr[5];
-// int ans = 100000;
-// int n, m, o;
-
-// int calc(int prev, int curr, int op) {
-// 	if (prev == -10000000) {
-// 		return curr;
-// 	}
-// 	if (op == 1) {
-// 		return prev + curr;
-// 	}
-// 	if (op == 2) {
-// 		return prev - curr;
-// 	}
-// 	if (op == 3) {
-// 		return prev * curr;
-// 	}
-// 	if (op == 4) {
-// 		if (curr == 0) return -1;
-// 		else return prev / curr;
-// 	}
-// 	return -10000000;
-// }
-
-// bool isDone(int prev, int curr, int op, int target) {
-// 	if (op == 4 && curr == 0) return false;
-// 	return (calc(prev, curr, op) == target);
-// }
-
-// void findMinTouch(int prev, int curr, int op, int tou, int target) {
-// 	if (op != -1 && curr != -10000000) {
-// 		bool flag = isDone(prev, curr, op, target);
-// 		if (flag && tou < o) {
-// 			if (tou + 1 < ans) {
-// 				ans = tou + 1;
-// 			}
-// 		}
-// 	}
-
-// 	if (prev == target && tou < o && op != -1 && curr == -10000000) {
-// 		if (tou < ans) {
-// 			ans = tou;
-// 		}
-// 	}
-
-// 	if (op == -1 && curr == target && tou < o) {
-// 		if (tou < ans) {
-// 			ans = tou;
-// 		}
-// 	}
-
-// 	if (tou > o) return;
-
-// 	for (int i = 0; i < m; i++) {
-// 		if (curr == -10000000) break; // if no operand
-// 		if (curr == 0 && op == 4) continue; // divide by 0
-// 		int val = calc(prev, curr, op);
-// 		findMinTouch(val, -10000000, opr[i], tou + 1, target);
-// 	}
-
-// 	for (int i = 0; i < n; i++) {
-// 		if (curr == -10000000) { // select operand
-// 			findMinTouch(prev, digits[i], op, tou + 1, target);
-// 		}
-// 		else {
-// 			int val = abs(curr);
-// 			val = val * 10 + digits[i];
-// 			if (curr < 0) {
-// 				val *= -1;
-// 			}
-// 			findMinTouch(prev, val, op, tou + 1, target);
-// 		}
-// 	}
-// }
-
-// int main() {
-// 	int t;
-// 	cin >> t;
-// 	for (int j = 1; j <= t; ++j) {
-// 		ans = 10000000;
-// 		cin >> n >> m >> o;
-// 		for (int i = 0; i < n; i++) {
-// 			cin >> digits[i];
-// 		}
-// 		for (int i = 0; i < m; i++) {
-// 			cin >> opr[i];
-// 		}
-
-// 		int target;
-// 		cin >> target;
-
-// 		findMinTouch(-10000000, -10000000, -1, 0, target);
-
-// 		cout << "#" << j << ": " << ans << "\n";
-// 	}
-// 	return 0;
-// }
